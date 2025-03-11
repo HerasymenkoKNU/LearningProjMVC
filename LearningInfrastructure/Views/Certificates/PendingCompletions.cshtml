@@ -1,0 +1,40 @@
+﻿@model IEnumerable<LearningDomain.Model.StudentsCourse>
+
+@{
+    ViewData["Title"] = "Заявки, що очікують завершення";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>Немає заявок, що очікують завершення.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Курс</th>
+                <th>Студент</th>
+                <th>Статус</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.Course.Name</td>
+                    <td>@app.Student.Name</td>
+                    <td>@app.Status</td>
+                    <td>
+                        <a asp-action="ApproveCompletion" asp-route-id="@app.Id" class="btn btn-primary">
+                            Підтвердити завершення
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

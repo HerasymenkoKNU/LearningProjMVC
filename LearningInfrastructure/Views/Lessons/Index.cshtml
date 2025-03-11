@@ -5,10 +5,15 @@
 }
 
 <h1>Уроки курсу  @ViewBag.CourseName</h1>
-
+@if (User.IsInRole("Teacher"))
+{
 <p>
-    @Html.ActionLink("Створити новий", "Create", new {courseId=ViewBag.CourseId})
-    <a asp-controller="Courses" asp-action="Details" asp-route-id="@ViewBag.CourseId">Назад до деталей</a>
+        @Html.ActionLink("Створити новий", "Create", new { courseId = ViewBag.CourseId }, new { @class = "btn-course" })
+   
+</p>
+}
+<p>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@ViewBag.CourseId" class="btn-course">Назад до деталей</a>
 </p>
 <table class="table">
     <thead>
@@ -49,10 +54,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Course.Name)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> 
-                <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                <td class="btn-group-right">
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-course">Редагувати</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-course">Деталі</a>
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-course">Видалити</a>
+                    }
             </td>
         </tr>
 }

@@ -1,0 +1,60 @@
+﻿@model IEnumerable<LearningDomain.Model.StudentsCourse>
+
+@{
+    ViewData["Title"] = "Мої курси";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>Ви не подали заявку або жодна з Ваших заявок не була підтверджена.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Назва курсу</th>
+                <th>Опис</th>
+                <th>Статус</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var application in Model)
+            {
+                <tr>
+                    <td>@application.Course.Name</td>
+                    <td>@application.Course.Info</td>
+                    <td>@application.Status</td>
+                    <td>
+                        <a asp-controller="Courses" asp-action="Details"
+                           asp-route-id="@application.Course.Id" class="btn btn-info">
+                            Переглянути
+                        </a>
+
+                        @if (application.Status == "Принято")
+                        {
+                            <!-- Кнопка "Підтвердити проходження" (RequestCompletion) -->
+                            <a asp-controller="StudentsCourses"
+                               asp-action="RequestCompletion"
+                               asp-route-id="@application.Id"
+                               class="btn btn-warning">
+                                Підтвердити проходження
+                            </a>
+                        }
+                        else if (application.Status == "Ожидает завершения")
+                        {
+                            <span class="text-muted">Очікується підтвердження учителя</span>
+                        }
+                        else if (application.Status == "Пройдено")
+                        {
+                            <span class="text-success">Курс пройдено</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

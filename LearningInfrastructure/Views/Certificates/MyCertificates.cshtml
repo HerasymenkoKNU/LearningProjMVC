@@ -1,0 +1,38 @@
+﻿@model IEnumerable<LearningDomain.Model.Certificate>
+
+@{
+    ViewData["Title"] = "Мої сертифікати";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>У вас ще немає сертифікатів.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Курс</th>
+                <th>Назва</th>
+              
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cert in Model)
+            {
+                <tr>
+                    <td>@cert.StudentCourses.Course.Name</td>
+                    <td>@cert.Name</td>
+                    
+                    <td>
+                        <a asp-action="Details" asp-route-id="@cert.Id" class="btn btn-info">Деталі</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

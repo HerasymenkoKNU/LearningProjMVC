@@ -7,7 +7,7 @@ namespace LearningDomain.Model;
 public partial class Course :Entity
 {
     [Required(ErrorMessage ="Поле не повинно бути порожнім")]
-    [Display(Name = "Курс")]
+    [Display(Name = "Назва курсу")]
     public string Name { get; set; } = null!;
     [Display(Name = "Інформація про курс")]
     public string? Info { get; set; }

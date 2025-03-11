@@ -1,0 +1,11 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Доступ заборонено";
+}
+
+<div class="alert alert-warning mt-4">
+    <h3>@ViewData["Title"]</h3>
+    <p>@Model</p>
+</div>
+
+<a asp-action="Index" asp-controller="Courses" class="btn btn-primary">Повернутися до курсів</a>

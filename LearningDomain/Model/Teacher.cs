@@ -5,8 +5,8 @@ namespace LearningDomain.Model;
 
 public partial class Teacher : Entity
 {
-   
 
+    public string IdentityId { get; set; } = null!;
     public string Name { get; set; } = null!;
 
     public string? Info { get; set; }

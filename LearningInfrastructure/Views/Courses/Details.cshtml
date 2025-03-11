@@ -1,34 +1,52 @@
 ﻿@model LearningDomain.Model.Course
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Деталі курсу";
 }
 
 <h1>Деталі</h1>
 
 <div>
     <h4>Курс</h4>
-    <a asp-action="Lessons" asp-route-id="@Model?.Id">Уроки курсу</a>
-    <a asp-action="Tests" asp-route-id="@Model?.Id">Тести курсу</a>
-    <a asp-action="Reviews" asp-route-id="@Model?.Id">Відгуки курсу</a>
+    <a asp-action="Lessons" asp-route-id="@Model.Id" class="btn-course">Уроки курсу</a>
+    <a asp-action="Tests" asp-route-id="@Model.Id" class="btn-course">Тести курсу</a>
+    <a asp-action="Reviews" asp-route-id="@Model.Id" class="btn-course">Відгуки курсу</a>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Info)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Info)
         </dd>
     </dl>
 </div>
+
 <div>
-    
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> 
-    <a asp-action="Index">Повернутися</a>
+    @* Для студентов: кнопка подать заявку *@
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Student"))
+        {
+            <form asp-controller="StudentsCourses" asp-action="Create" method="get" class="d-inline">
+                <input type="hidden" name="courseId" value="@Model.Id" />
+                <button type="submit" class="btn-course">Подати заявку</button>
+            </form>
+        }
+        else if (User.IsInRole("Teacher"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-course">Редагувати</a>
+        }
+    }
+    else
+    {
+        <p class="text-warning">Для подачі заявки необхідно увійти в систему.</p>
+    }
+    <a asp-action="Index" class="btn-course">Повернутися</a>
 </div>

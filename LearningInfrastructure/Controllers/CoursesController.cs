@@ -7,25 +7,59 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LearningDomain.Model;
 using LearningInfrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LearningInfrastructure.Controllers
 {
+    [Authorize]
     public class CoursesController : Controller
     {
         private readonly LearningMvcContext _context;
 
-        public CoursesController(LearningMvcContext context)
+       
+        public CoursesController(LearningMvcContext context) 
         {
             _context = context;
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Courses.ToListAsync());
+            // Начинаем с базового запроса
+            var courses = _context.Courses.AsQueryable();
+
+            // Если пользователь что-то вводил
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                // Фильтруем по полю Name
+                courses = courses.Where(c => c.Name.Contains(searchString));
+            }
+
+            // Выполняем запрос к базе
+            var courseList = await courses.ToListAsync();
+
+            // Если что-то искали, но ничего не нашлось
+            if (!string.IsNullOrEmpty(searchString) && courseList.Count == 0)
+            {
+                // Устанавливаем сообщение, что курс не найден
+                ViewBag.NotFoundMessage = $"Не вдалось знайти курс с ім'ям «{searchString}».";
+
+                // Возвращаемся к полному списку
+                courseList = await _context.Courses.ToListAsync();
+            }
+
+            return View(courseList);
+        }
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            var message = TempData["AccessMessage"] as string ?? "Доступ заборонено.";
+            return View((object)message);
         }
 
         // GET: Courses/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,6 +76,7 @@ namespace LearningInfrastructure.Controllers
 
             return View(course);
         }
+        [Authorize]
         public async Task<IActionResult> Lessons(int? id)
         {
             if (id == null)
@@ -58,6 +93,7 @@ namespace LearningInfrastructure.Controllers
 
             return RedirectToAction("Index", "Lessons", new { id = course.Id, name = course.Name });
         }
+        [Authorize]
         public async Task<IActionResult> Reviews(int? id) // id — это CourseId
         {
             if (id == null)
@@ -74,6 +110,7 @@ namespace LearningInfrastructure.Controllers
             return RedirectToAction("Index", "Reviews", new { id = course.Id, name = course.Name });
 
         }
+        [Authorize]
         public async Task<IActionResult> Tests(int? id) // id — это CourseId
         {
             if (id == null)
@@ -91,6 +128,7 @@ namespace LearningInfrastructure.Controllers
 
         }
         // GET: Courses/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             return View();
@@ -101,6 +139,7 @@ namespace LearningInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create([Bind("Name,Info,Id")] Course course)
         {
             if (ModelState.IsValid)
@@ -113,6 +152,7 @@ namespace LearningInfrastructure.Controllers
         }
 
         // GET: Courses/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -133,6 +173,7 @@ namespace LearningInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Info,Id")] Course course)
         {
             if (id != course.Id)
@@ -164,6 +205,7 @@ namespace LearningInfrastructure.Controllers
         }
 
         // GET: Courses/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -184,6 +226,7 @@ namespace LearningInfrastructure.Controllers
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _context.Courses.FindAsync(id);

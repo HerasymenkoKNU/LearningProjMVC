@@ -6,7 +6,7 @@ namespace LearningDomain.Model;
 public partial class Student : Entity
 {
    
-
+    public string IdentityId { get; set; } = null!;
     public string Name { get; set; } = null!;
 
     public string? Info { get; set; }

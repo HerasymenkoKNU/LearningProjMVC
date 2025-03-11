@@ -1,0 +1,19 @@
+﻿@model LearningDomain.Model.Certificate
+
+@{
+    ViewData["Title"] = "Деталі сертифіката";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Курс</dt>
+        <dd class="col-sm-10">@Model.StudentCourses.Course.Name</dd>
+        <dt class="col-sm-2">Назва</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+        <dt class="col-sm-2">Інформація</dt>
+        <dd class="col-sm-10">@Model.Info</dd>
+    </dl>
+</div>
+<a asp-action="MyCertificates" class="btn btn-secondary">Повернутися</a>

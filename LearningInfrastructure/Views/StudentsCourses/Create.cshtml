@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Подать заявку на курс";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>Ви впевнені, що хочете подати заявку на цей курс?</p>
+
+<form asp-action="Create" method="post">
+    <!-- Передаем скрыто CourseId -->
+    <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <button type="submit" class="btn btn-primary">Відправити заявку</button>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@ViewBag.CourseId" class="btn btn-secondary">Відміна</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

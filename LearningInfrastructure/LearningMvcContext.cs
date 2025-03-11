@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using LearningDomain.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearningInfrastructure;
 
-public partial class LearningMvcContext : DbContext
+public partial class LearningMvcContext : IdentityDbContext<ApplicationUser>
 {
-    public LearningMvcContext()
+    public LearningMvcContext() 
     {
     }
 
@@ -40,6 +41,7 @@ public partial class LearningMvcContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Certificate>(entity =>
         {
             entity.Property(e => e.Info).HasColumnType("ntext");
@@ -47,7 +49,7 @@ public partial class LearningMvcContext : DbContext
 
             entity.HasOne(d => d.StudentCourses).WithMany(p => p.Certificates)
                 .HasForeignKey(d => d.StudentCoursesId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Certificates_StudentsCourses");
         });
 
@@ -95,7 +97,7 @@ public partial class LearningMvcContext : DbContext
 
             entity.HasOne(d => d.Course).WithMany(p => p.StudentsCourses)
                 .HasForeignKey(d => d.CourseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_StudentsCourses_Students");
 
             entity.HasOne(d => d.Student).WithMany(p => p.StudentsCourses)

@@ -3,6 +3,86 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Вітаю</h1>
+    
 </div>
+<!-- Блок с дополнительной информацией перед диаграммами -->
+<div style="text-align: center; margin-top: 30px;">
+    <h2>Трохи цікавої інформації</h2>
+</div>
+
+<!-- Блок диаграмм (отображается перед футером) -->
+<div class="container">
+    <div class="row justify-content-center" style="margin-top: 20px;">
+        <div class="col-md-4">
+        
+            <div id="pieChartContainer"></div>
+        </div>
+        <div class="col-md-4">
+          
+            <div id="columnChartContainer"></div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <!-- Подключаем Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+            // 1) Круговая диаграмма: Распределение студентов по курсам
+            fetch('/api/charts/studentsByCourse')
+                .then(response => response.json())
+                .then(data => {
+                    var pieData = new google.visualization.DataTable();
+                    pieData.addColumn('string', 'Курс');
+                    pieData.addColumn('number', 'Студентів');
+
+                    data.forEach(item => {
+                        pieData.addRow([item.label, item.count]);
+                    });
+
+                    var pieOptions = {
+                        title: 'Розподілення студентів за курсами',
+                        width: 500,
+                        height: 400
+                    };
+
+                    var pieChart = new google.visualization.PieChart(
+                        document.getElementById('pieChartContainer')
+                    );
+                    pieChart.draw(pieData, pieOptions);
+                });
+
+            // 2) Столбчатая диаграмма: Количество сертификатов у каждого студента
+            fetch('/api/charts/certificatesByStudent')
+                .then(response => response.json())
+                .then(data => {
+                    var columnData = new google.visualization.DataTable();
+                    columnData.addColumn('string', 'Студент');
+                    columnData.addColumn('number', 'Сертификатів');
+
+                    data.forEach(item => {
+                        columnData.addRow([item.label, item.count]);
+                    });
+
+                    var columnOptions = {
+                        title: 'Кількість сертифікатів у кожного студента',
+                        width: 500,
+                        height: 400,
+                        legend: { position: 'none' }
+                    };
+
+                    var columnChart = new google.visualization.ColumnChart(
+                        document.getElementById('columnChartContainer')
+                    );
+                    columnChart.draw(columnData, columnOptions);
+                });
+        }
+    </script>
+}

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<LearningDomain.Model.StudentsCourse>
+
+@{
+    ViewData["Title"] = "Заявки";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>Немає заявок для відображення.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Курс</th>
+                <th>Студент</th>
+                <th>Статус</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.Course.Name</td>
+                    <td>@app.Student.Name</td>
+                    <td>@app.Status</td>
+                    <td>
+                        @if (app.Status == "Ожидает")
+                        {
+                            <a asp-action="Approve" asp-route-id="@app.Id" class="btn btn-success">Одобрити</a>
+                            <a asp-action="Reject" asp-route-id="@app.Id" class="btn btn-danger">Відхилити</a>
+                        }
+                        else if (app.Status == "Ожидает завершения")
+                        {
+                            <a asp-controller="Certificates" asp-action="ApproveCompletion"
+                               asp-route-id="@app.Id" class="btn btn-primary">
+                                Підтвердити завершення
+                            </a>
+                        }
+                        else if (app.Status == "Пройдено")
+                        {
+                            <span class="text-success">Курс пройдено</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

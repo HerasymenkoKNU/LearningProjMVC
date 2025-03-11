@@ -5,12 +5,28 @@
 }
 
 <h1>Курси</h1>
-
-<p>
-    <a asp-action="Create">Додати новий</a>
-</p>
+<!-- Если ViewBag.NotFoundMessage не пуст, показываем сообщение -->
+@if (ViewBag.NotFoundMessage != null)
+{
+    <div style="color: red; margin-bottom: 2px;">
+        @ViewBag.NotFoundMessage
+    </div>
+}
+<!-- Блок с формой поиска справа -->
+<div style="text-align: right; margin-bottom: 10px;">
+    <form asp-action="Index" method="get">
+        <input type="text" name="searchString" placeholder="Пошук за ім'ям..." />
+        <button type="submit" class="btn-course">Знайти</button>
+    </form>
+</div>
+@if (User.IsInRole("Teacher"))
+{
+    <p>
+        <a asp-action="Create" class="btn-course">Додати новий</a>
+    </p>
+}
 <table class="table">
-    <thead>
+    <thead >
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -22,18 +38,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Info)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> 
-                <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Info)
+                </td>
+                <td style="text-align: right;">
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-course">Редагувати</a>
+                    }
+
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-course">Деталі</a>
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-course">Видалити</a>
+                    }
             </td>
         </tr>
 }

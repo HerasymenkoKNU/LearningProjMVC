@@ -7,19 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LearningDomain.Model;
 using LearningInfrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace LearningInfrastructure.Controllers
 {
+    [Authorize]
     public class LessonsController : Controller
     {
         private readonly LearningMvcContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LessonsController(LearningMvcContext context)
+        public LessonsController(LearningMvcContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Lessons
+        // GET: Lessons?courseId=5&courseName=...
         public async Task<IActionResult> Index(int? id, string? name)
         {
             if (id == null)
@@ -37,10 +42,30 @@ namespace LearningInfrastructure.Controllers
             ViewBag.CourseId = id;
             ViewBag.CourseName = name;
 
-            var lessonByCourse = _context.Lessons
-                                         .Where(b => b.CourseId == id)
-                                         .Include(b => b.Course);
-            return View(await lessonByCourse.ToListAsync());
+            // Если пользователь студент, проверяем его заявку на курс
+            if (User.IsInRole("Student"))
+            {
+                string userId = _userManager.GetUserId(User);
+                var student = await _context.Students.FirstOrDefaultAsync(s => s.IdentityId == userId);
+                if (student == null)
+                {
+                    TempData["AccessMessage"] = "Студент не знайдений.";
+                    return RedirectToAction("AccessDenied", "Courses");
+                }
+                var application = await _context.StudentsCourses
+                    .FirstOrDefaultAsync(sc => sc.CourseId == id && sc.StudentId == student.Id);
+                if (application == null || application.Status != "Принято" && application.Status != "Пройдено")
+                {
+                    TempData["AccessMessage"] = "Доступ до уроків можливий лише після підтвердження заявки.";
+                    return RedirectToAction("AccessDenied", "Courses");
+                }
+            }
+
+            var lessons = await _context.Lessons
+                                         .Where(l => l.CourseId == id)
+                                         .Include(l => l.Course)
+                                         .ToListAsync();
+            return View(lessons);
         }
 
 
@@ -64,6 +89,7 @@ namespace LearningInfrastructure.Controllers
         }
 
         // GET: Lessons/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create(int courseId)
         {
          ViewBag.CourseId = courseId;
@@ -76,6 +102,7 @@ namespace LearningInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create(int courseId,[Bind("Id,Name,Info,VideoUrl,DocxUrl")] Lesson lesson)
         {
             lesson.CourseId = courseId;
@@ -88,6 +115,7 @@ namespace LearningInfrastructure.Controllers
         }
 
         // GET: Lessons/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -111,6 +139,7 @@ namespace LearningInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Info,VideoUrl,DocxUrl,CourseId,Id")] Lesson lesson)
         {
             if (id != lesson.Id)
@@ -142,6 +171,7 @@ namespace LearningInfrastructure.Controllers
         }
 
         // GET: Lessons/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -163,6 +193,7 @@ namespace LearningInfrastructure.Controllers
         // POST: Lessons/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var lesson = await _context.Lessons.FindAsync(id);
