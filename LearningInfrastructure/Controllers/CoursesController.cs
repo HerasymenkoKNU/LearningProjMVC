@@ -22,7 +22,7 @@ namespace LearningInfrastructure.Controllers
             _context = context;
         }
 
-        // GET: Courses
+    
         [Authorize]
         public async Task<IActionResult> Index(string searchString)
         {
