@@ -31,40 +31,40 @@ body {
 }
 
 .btn-course {
-    background-color: #dc3545; /* Ярко-красный цвет заливки */
-    color: #ffffff; /* Белый цвет текста */
-    border: none; /* Убираем границу */
-    border-radius: 0; /* Убираем скругление */
-    padding: 0.5rem 1rem; /* Отступы: сверху/снизу 0.5rem, слева/справа 1rem */
-    text-decoration: none; /* Убираем подчеркивание */
-    display: inline-block; /* Чтобы вело себя как кнопка */
+    background-color: #dc3545; 
+    color: #ffffff; 
+    border: none; 
+    border-radius: 0; 
+    padding: 0.5rem 1rem; 
+    text-decoration: none; 
+    display: inline-block; 
     margin: 0.3rem 0.3rem;
     border-radius: 5%;
 }
 
 .table-actions {
-    text-align: right; /* Выровнять содержимое ячейки вправо */
-    padding-right: 10px; /* Добавить небольшой отступ от правого края */
+    text-align: right; 
+    padding-right: 10px; 
 }
 
 .btn-course:hover {
-    background-color: #cc0000; /* При наведении - чуть более темный красный */
+    background-color: #cc0000; 
     color: #ffffff;
     text-decoration: none;
 }
-/* Переопределяем фон для всего navbar */
+
 .navbar {
-    background-color: #dc3545 !important; /* Красный цвет, как у кнопок */
+    background-color: #dc3545 !important; 
 }
 
-    /* Ссылки и бренд внутри navbar делаем белыми */
+    
     .navbar .navbar-brand,
     .navbar .nav-link {
         color: #ffffff !important;
     }
 
-        /* При наведении мышью (hover) можно сделать небольшое затемнение */
+       
         .navbar .nav-link:hover,
         .navbar .navbar-brand:hover {
-            color: #f8f9fa !important; /* чуть светлее/темнее по желанию */
+            color: #f8f9fa !important; 
         }

@@ -63,7 +63,7 @@ namespace LearningInfrastructure.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Create(int courseId)
         {
-            // Проверяем, что заявка студента подтверждена, иначе запрещаем создание
+           
             string userId = _userManager.GetUserId(User);
             var student = await _context.Students.FirstOrDefaultAsync(s => s.IdentityId == userId);
             if (student != null)
@@ -87,7 +87,7 @@ namespace LearningInfrastructure.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Create(int courseId, [Bind("Id,Name,Info")] Review review)
         {
-            // Проверяем заявку так же, как в GET
+          
             string userId = _userManager.GetUserId(User);
             var student = await _context.Students.FirstOrDefaultAsync(s => s.IdentityId == userId);
             if (student != null)
@@ -106,7 +106,7 @@ namespace LearningInfrastructure.Controllers
             return RedirectToAction("Index", new { id = courseId });
         }
 
-        // GET: Reviews/Edit/5 (для учителя)
+   
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -121,7 +121,7 @@ namespace LearningInfrastructure.Controllers
             return View(review);
         }
 
-        // POST: Reviews/Edit/5 (для учителя)
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
@@ -146,7 +146,7 @@ namespace LearningInfrastructure.Controllers
             return RedirectToAction("Index", new { id = review.CourseId });
         }
 
-        // GET: Reviews/Delete/5 (для учителя)
+      
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -160,7 +160,7 @@ namespace LearningInfrastructure.Controllers
             return View(review);
         }
 
-        // POST: Reviews/Delete/5 (для учителя)
+      
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]

@@ -5,14 +5,14 @@
 }
 
 <h1>Курси</h1>
-<!-- Если ViewBag.NotFoundMessage не пуст, показываем сообщение -->
+
 @if (ViewBag.NotFoundMessage != null)
 {
     <div style="color: red; margin-bottom: 2px;">
         @ViewBag.NotFoundMessage
     </div>
 }
-<!-- Блок с формой поиска справа -->
+
 <div style="text-align: right; margin-bottom: 10px;">
     <form asp-action="Index" method="get">
         <input type="text" name="searchString" placeholder="Пошук за ім'ям..." />

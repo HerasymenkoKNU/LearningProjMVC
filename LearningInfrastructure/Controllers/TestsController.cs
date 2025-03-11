@@ -41,7 +41,7 @@ namespace LearningInfrastructure.Controllers
             ViewBag.CourseId = id;
             ViewBag.CourseName = name;
 
-            // Если пользователь студент, проверяем его заявку
+          
             if (User.IsInRole("Student"))
             {
                 string userId = _userManager.GetUserId(User);

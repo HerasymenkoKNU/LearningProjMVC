@@ -21,7 +21,7 @@ namespace LearningInfrastructure.Controllers
             _userManager = userManager;
         }
 
-        // Учитель подтверждает завершение, создаёт сертификат
+      
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> ApproveCompletion(int id)
         {
@@ -38,12 +38,12 @@ namespace LearningInfrastructure.Controllers
                 return BadRequest("Статус заявки має бути 'Ожидает завершения'.");
             }
 
-            // Меняем статус на "Пройдено"
+           
             application.Status = "Пройдено";
             _context.Update(application);
             await _context.SaveChangesAsync();
 
-            // Создаём сертификат
+      
             var certificate = new Certificate
             {
                 StudentCoursesId = application.Id,
@@ -54,11 +54,11 @@ namespace LearningInfrastructure.Controllers
             _context.Certificates.Add(certificate);
             await _context.SaveChangesAsync();
 
-            // Возвращаемся к списку заявок
+         
             return RedirectToAction("Index", "StudentsCourses");
         }
 
-        // Студент смотрит свои сертификаты
+   
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyCertificates()
         {
@@ -76,7 +76,7 @@ namespace LearningInfrastructure.Controllers
             return View(certificates);
         }
 
-        // Детали конкретного сертификата (опционально)
+      
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Details(int id)
         {

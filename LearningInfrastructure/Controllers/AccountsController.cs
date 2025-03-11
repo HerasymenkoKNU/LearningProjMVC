@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LearningDomain.Model;
-using LearningInfrastructure.Models; // пространство имен для ViewModel
+using LearningInfrastructure.Models; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,21 +35,20 @@ namespace LearningInfrastructure.Controllers
         public async Task<IActionResult> RegisterTeacher(RegisterTeacherViewModel model)
         {
           
-                // Создаём пользователя в Identity
+              
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // Добавляем роль "Teacher" (убедитесь, что роль создана)
+                    
                     await _userManager.AddToRoleAsync(user, "Teacher");
 
-                    // Создаем запись в таблице Teachers
+                  
                     var teacher = new Teacher
                     {
                         Name = model.Name,
                         Email = model.Email,
-                        // Обычно пароль не сохраняют в открытом виде, но оставляем, если требуется по условию
-                        Password = model.Password,
+                       
                         IdentityId = user.Id
                     };
                     _context.Teachers.Add(teacher);
@@ -112,7 +111,7 @@ namespace LearningInfrastructure.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
-            // Если returnUrl содержит "Courses", можно добавить сообщение
+            
             if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Contains("Courses"))
             {
                 ViewBag.ErrorMessage = "Доступ до курсів можливий тільки після входу в систему.";
@@ -127,7 +126,7 @@ namespace LearningInfrastructure.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                // Пытаемся войти с использованием Email и Password
+              
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {

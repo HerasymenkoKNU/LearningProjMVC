@@ -7,7 +7,7 @@
 <p>Ви впевнені, що хочете подати заявку на цей курс?</p>
 
 <form asp-action="Create" method="post">
-    <!-- Передаем скрыто CourseId -->
+ 
     <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
     <div asp-validation-summary="All" class="text-danger"></div>
     <button type="submit" class="btn btn-primary">Відправити заявку</button>

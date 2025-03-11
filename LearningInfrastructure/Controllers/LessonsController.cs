@@ -24,13 +24,12 @@ namespace LearningInfrastructure.Controllers
             _userManager = userManager;
         }
 
-        // GET: Lessons?courseId=5&courseName=...
+  
         public async Task<IActionResult> Index(int? id, string? name)
         {
             if (id == null)
                 return RedirectToAction("Index", "Courses");
 
-            // Если name не передан, получаем курс из БД
             if (string.IsNullOrEmpty(name))
             {
                 var course = await _context.Courses.FindAsync(id);
@@ -42,7 +41,7 @@ namespace LearningInfrastructure.Controllers
             ViewBag.CourseId = id;
             ViewBag.CourseName = name;
 
-            // Если пользователь студент, проверяем его заявку на курс
+ 
             if (User.IsInRole("Student"))
             {
                 string userId = _userManager.GetUserId(User);

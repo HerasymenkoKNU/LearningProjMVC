@@ -26,26 +26,25 @@ namespace LearningInfrastructure.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string searchString)
         {
-            // Начинаем с базового запроса
+            
             var courses = _context.Courses.AsQueryable();
 
-            // Если пользователь что-то вводил
+           
             if (!string.IsNullOrEmpty(searchString))
             {
-                // Фильтруем по полю Name
+             
                 courses = courses.Where(c => c.Name.Contains(searchString));
             }
 
-            // Выполняем запрос к базе
             var courseList = await courses.ToListAsync();
 
-            // Если что-то искали, но ничего не нашлось
+           
             if (!string.IsNullOrEmpty(searchString) && courseList.Count == 0)
             {
-                // Устанавливаем сообщение, что курс не найден
+              
                 ViewBag.NotFoundMessage = $"Не вдалось знайти курс с ім'ям «{searchString}».";
 
-                // Возвращаемся к полному списку
+           
                 courseList = await _context.Courses.ToListAsync();
             }
 

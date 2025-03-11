@@ -6,12 +6,12 @@
     <h1 class="display-4">Вітаю</h1>
     
 </div>
-<!-- Блок с дополнительной информацией перед диаграммами -->
+
 <div style="text-align: center; margin-top: 30px;">
     <h2>Трохи цікавої інформації</h2>
 </div>
 
-<!-- Блок диаграмм (отображается перед футером) -->
+
 <div class="container">
     <div class="row justify-content-center" style="margin-top: 20px;">
         <div class="col-md-4">
@@ -27,7 +27,7 @@
 
 
 @section Scripts {
-    <!-- Подключаем Google Charts -->
+  
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script type="text/javascript">
@@ -35,7 +35,7 @@
         google.charts.setOnLoadCallback(drawCharts);
 
         function drawCharts() {
-            // 1) Круговая диаграмма: Распределение студентов по курсам
+         
             fetch('/api/charts/studentsByCourse')
                 .then(response => response.json())
                 .then(data => {
@@ -59,7 +59,6 @@
                     pieChart.draw(pieData, pieOptions);
                 });
 
-            // 2) Столбчатая диаграмма: Количество сертификатов у каждого студента
             fetch('/api/charts/certificatesByStudent')
                 .then(response => response.json())
                 .then(data => {
