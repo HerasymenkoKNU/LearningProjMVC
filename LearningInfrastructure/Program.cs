@@ -1,34 +1,33 @@
 ﻿using LearningDomain.Model;
 using LearningInfrastructure;
+using LearningInfrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddDbContext<LearningMvcContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
-    
 })
 .AddEntityFrameworkStores<LearningMvcContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
 
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login";       
-    options.AccessDeniedPath = "/Account/AccessDenied"; 
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IDataPortServiceFactory<Course>, DataPortServiceFactory>();
+
 
 var app = builder.Build();
 
@@ -46,7 +45,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -56,10 +54,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllerRoute(
     name: "default",

@@ -4,13 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Уроки курсу  @ViewBag.CourseName</h1>
+<h1>Уроки курсу @ViewBag.CourseName</h1>
 @if (User.IsInRole("Teacher"))
 {
-<p>
+    <p>
         @Html.ActionLink("Створити новий", "Create", new { courseId = ViewBag.CourseId }, new { @class = "btn-course" })
-   
-</p>
+    </p>
 }
 <p>
     <a asp-controller="Courses" asp-action="Details" asp-route-id="@ViewBag.CourseId" class="btn-course">Назад до деталей</a>
@@ -18,42 +17,33 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Info)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VideoUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DocxUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Info)</th>
+            <th>@Html.DisplayNameFor(model => model.First().VideoUrl)</th>
+            <th>@Html.DisplayNameFor(model => model.First().DocxUrl)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Course)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Info)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VideoUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DocxUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Name)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Info)</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.VideoUrl))
+                    {
+                        <a href="@item.VideoUrl" target="_blank">@item.VideoUrl</a>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.DocxUrl))
+                    {
+                        <a href="@item.DocxUrl" target="_blank">@item.DocxUrl</a>
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Course.Name)</td>
                 <td class="btn-group-right">
                     @if (User.IsInRole("Teacher"))
                     {
@@ -64,8 +54,8 @@
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn-course">Видалити</a>
                     }
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

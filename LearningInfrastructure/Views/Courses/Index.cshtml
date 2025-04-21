@@ -12,6 +12,13 @@
         @ViewBag.NotFoundMessage
     </div>
 }
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 
 <div style="text-align: right; margin-bottom: 10px;">
     <form asp-action="Index" method="get">
@@ -25,6 +32,12 @@
         <a asp-action="Create" class="btn-course">Додати новий</a>
     </p>
 }
+@if (User.IsInRole("Teacher"))
+{
+    <a class="btn btn-primary btn-course mb-3" asp-action="Export" asp-controller="Courses">Експортувати у файл</a>
+    <a class="btn btn-success btn-course mb-3 ms-2" asp-action="Import" asp-controller="Courses">Імпортувати з файлу</a>
+}
+
 <table class="table">
     <thead >
         <tr>
